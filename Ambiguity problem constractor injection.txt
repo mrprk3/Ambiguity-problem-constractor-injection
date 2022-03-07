@@ -1,0 +1,78 @@
+Ambiguity problem constractor injection
+========================================
+
+Adition.java
+-------------
+
+package com.springcore.constractorinjection;
+
+public class Adition {
+	private int a;
+	private int b;
+	
+	public Adition(int a, int b) {
+		this.a=a;
+		this.b=b;
+		System.out.println("constractor int, int ");
+	}
+	
+	public Adition(double a, double b) {
+		this.a=(int)b;
+		this.b=(int)b;
+		System.out.println("constractor double double");
+	}
+	
+	public Adition(String a, String b) {
+		this.a=Integer.parseInt(a);
+		this.b=Integer.parseInt(b);
+		System.out.println("constractor string string");
+	}
+	
+	public void doSum() {
+		System.out.println("Sum is" +(this.a + this.b));
+	}
+
+}
+
+
+constinjectionconfig.xml
+-------------------------
+//by default it will take 1st constractor, if string value is there then it will prefer to take string value first. to solve this problem we have to use the type tag inside constractor arg
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans.xsd">
+ 
+ 	
+ 	<bean class="com.springcore.constractorinjection.Adition" name="adition">
+ 		<constructor-arg value="10" type="int"/>
+ 		<constructor-arg value="20" type="int"/>
+ 	</bean>
+ 	
+</beans>
+
+
+Test.java
+----------
+
+package com.springcore.constractorinjection;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class Test {
+
+	public static void main(String[] args) {
+		ApplicationContext context = new ClassPathXmlApplicationContext("com/springcore/constractorinjection/constinjectionconfig.xml");
+		
+		Adition a=(Adition) context.getBean("adition");
+		a.doSum();
+	}
+
+}
+
+
+
+
